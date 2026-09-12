@@ -17,3 +17,6 @@ footer { margin-top: 2rem; color: #788980; font-size: .85rem; }
 .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
 .filters button { background: #e3e6dd; color: #183b38; }
 .filters button[aria-pressed=true] { background: #205b4c; color: white; }
+.task-actions { display: flex; justify-content: flex-end; }
+.clear-completed { background: transparent; color: #855048; }
+.clear-completed:disabled { color: #788980; cursor: not-allowed; opacity: .55; }

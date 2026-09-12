@@ -1,9 +1,10 @@
-import { addTask, toggleTask, removeTask, loadTasks, saveTasks, filterTasks, loadFilter, saveFilter } from './tasks.mjs';
+import { addTask, toggleTask, removeTask, clearCompletedTasks, loadTasks, saveTasks, filterTasks, loadFilter, saveFilter } from './tasks.mjs';
 
 const form = document.querySelector('#task-form');
 const input = document.querySelector('#task-title');
 const list = document.querySelector('#task-list');
 const summary = document.querySelector('#summary');
+const clearCompletedButton = document.querySelector('#clear-completed');
 const filterButtons = document.querySelectorAll('[data-filter]');
 let tasks = loadTasks(localStorage);
 let filter = loadFilter(localStorage);
@@ -13,6 +14,7 @@ function render() {
   for (const button of filterButtons) {
     button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
   }
+  clearCompletedButton.disabled = !tasks.some((task) => task.completed);
   summary.textContent = `${tasks.filter((task) => !task.completed).length} remaining`;
   for (const task of filterTasks(tasks, filter)) {
     const item = document.createElement('li');
@@ -53,6 +55,8 @@ form.addEventListener('submit', (event) => {
 });
 
 input.addEventListener('input', () => input.setCustomValidity(''));
+
+clearCompletedButton.addEventListener('click', () => update(clearCompletedTasks(tasks)));
 
 for (const button of filterButtons) {
   button.addEventListener('click', () => {

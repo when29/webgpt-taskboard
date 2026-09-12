@@ -14,6 +14,10 @@ export function removeTask(tasks, id) {
   return tasks.filter((task) => task.id !== id);
 }
 
+export function clearCompletedTasks(tasks) {
+  return tasks.filter((task) => !task.completed);
+}
+
 export function loadTasks(storage) {
   try {
     const parsed = JSON.parse(storage.getItem('taskboard.tasks') || '[]');
