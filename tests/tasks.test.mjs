@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
-import { addTask, toggleTask, removeTask, loadTasks, saveTasks, filterTasks, loadFilter, saveFilter } from '../src/tasks.mjs';
+import { addTask, toggleTask, removeTask, clearCompletedTasks, loadTasks, saveTasks, filterTasks, loadFilter, saveFilter } from '../src/tasks.mjs';
 
 test('add, complete and remove a task without mutating the previous state', () => {
   const original = [];
@@ -46,6 +46,20 @@ test('filters preserve task state and follow completion changes', () => {
   assert.deepEqual(filterTasks([], 'completed'), []);
   assert.deepEqual(filterTasks(toggleTask(tasks, 'a'), 'active'), []);
   assert.deepEqual(tasks, snapshot);
+});
+
+test('clears completed tasks while preserving active tasks and previous state', () => {
+  const tasks = [
+    { id: 'a', title: 'First active', completed: false },
+    { id: 'b', title: 'First done', completed: true },
+    { id: 'c', title: 'Second active', completed: false },
+    { id: 'd', title: 'Second done', completed: true }
+  ];
+  const snapshot = structuredClone(tasks);
+  const remaining = clearCompletedTasks(tasks);
+  assert.deepEqual(remaining.map((task) => task.id), ['a', 'c']);
+  assert.deepEqual(tasks, snapshot);
+  assert.deepEqual(clearCompletedTasks(remaining), remaining);
 });
 
 test('filter selection round-trips independently and tolerates invalid storage', () => {
@@ -109,14 +123,37 @@ function mountApp(storage) {
   const source = readFileSync(new URL('../src/app.mjs', import.meta.url), 'utf8').replace(/^import .*;\r?\n/, '');
   runInNewContext(source, {
     document, localStorage: storage, crypto: { randomUUID: () => 'new-' + ++id },
-    addTask, toggleTask, removeTask, loadTasks, saveTasks, filterTasks, loadFilter, saveFilter
+    addTask, toggleTask, removeTask, clearCompletedTasks, loadTasks, saveTasks, filterTasks, loadFilter, saveFilter
   });
   const byTag = (tag) => [...elements.values()].find((entry) => entry.tag === tag).element;
   return {
     form: byTag('form'), input: byTag('input'), list: byTag('ul'),
-    summary: elements.get('#summary').element, buttons
+    summary: elements.get('#summary').element,
+    clearCompleted: elements.get('#clear-completed').element,
+    buttons
   };
 }
+
+test('clear completed action is disabled when empty and preserves active tasks', () => {
+  const values = new Map();
+  const storage = { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) };
+  saveTasks(storage, [
+    { id: 'active', title: 'Keep me', completed: false },
+    { id: 'done', title: 'Remove me', completed: true }
+  ]);
+  const app = mountApp(storage);
+  const titles = () => app.list.children.map((item) => item.children[1].textContent);
+  assert.equal(app.clearCompleted.disabled, false);
+  app.clearCompleted.fire('click');
+  assert.deepEqual(titles(), ['Keep me']);
+  assert.deepEqual(loadTasks(storage), [{ id: 'active', title: 'Keep me', completed: false }]);
+  assert.equal(app.clearCompleted.disabled, true);
+  app.list.children[0].children[0].fire('change');
+  assert.equal(app.clearCompleted.disabled, false);
+  app.clearCompleted.fire('click');
+  assert.deepEqual(loadTasks(storage), []);
+  assert.equal(app.clearCompleted.disabled, true);
+});
 
 test('app validates input, filters live tasks and restores selection on reload', () => {
   const values = new Map();
