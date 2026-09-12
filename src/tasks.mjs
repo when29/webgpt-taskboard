@@ -1,4 +1,6 @@
 export function addTask(tasks, title, id) {
+  title = title.trim();
+  if (!title) return tasks;
   return [...tasks, { id, title, completed: false }];
 }
 
@@ -25,4 +27,26 @@ export function loadTasks(storage) {
 
 export function saveTasks(storage, tasks) {
   storage.setItem('taskboard.tasks', JSON.stringify(tasks));
+}
+
+export function filterTasks(tasks, filter) {
+  if (filter === 'active') return tasks.filter((task) => !task.completed);
+  if (filter === 'completed') return tasks.filter((task) => task.completed);
+  return tasks;
+}
+
+function validFilter(filter) {
+  return ['all', 'active', 'completed'].includes(filter) ? filter : 'all';
+}
+
+export function loadFilter(storage) {
+  try {
+    return validFilter(storage.getItem('taskboard.filter'));
+  } catch {
+    return 'all';
+  }
+}
+
+export function saveFilter(storage, filter) {
+  storage.setItem('taskboard.filter', validFilter(filter));
 }
