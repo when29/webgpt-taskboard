@@ -13,6 +13,11 @@
       <label for="task-title">What needs doing?</label>
       <div class="entry"><input id="task-title" name="title" required maxlength="200" autocomplete="off"><button>Add task</button></div>
     </form>
+    <div class="filters" role="group" aria-label="할 일 필터">
+      <button type="button" data-filter="all" aria-pressed="true">전체</button>
+      <button type="button" data-filter="active" aria-pressed="false">진행 중</button>
+      <button type="button" data-filter="completed" aria-pressed="false">완료</button>
+    </div>
     <p id="summary" aria-live="polite"></p>
     <ul id="task-list" aria-label="Tasks"></ul>
     <footer>Your tasks stay in this browser.</footer>
