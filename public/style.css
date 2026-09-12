@@ -1,0 +1,16 @@
+:root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #183b38; background: #f5f3ea; }
+body { margin: 0; padding: 5vh 1rem; }
+main { max-width: 42rem; margin: auto; padding: clamp(1.5rem, 5vw, 3rem); background: #fffef8; border: 1px solid #d8dfd5; border-radius: 1rem; }
+.eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; color: #567168; }
+h1 { font-size: 3rem; line-height: 1.1; margin: .5rem 0 2rem; }
+label { display: block; margin-bottom: .5rem; font-weight: 600; }
+.entry { display: flex; gap: .6rem; }
+input[name=title] { flex: 1; min-width: 0; padding: .8rem; border: 1px solid #9aafa5; border-radius: .4rem; font: inherit; }
+button { background: #205b4c; color: white; border: 0; border-radius: .4rem; padding: .7rem 1rem; font: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid #dcad48; outline-offset: 3px; }
+ul { list-style: none; padding: 0; }
+li { display: flex; align-items: center; gap: .8rem; padding: 1rem 0; border-bottom: 1px solid #e3e6dd; }
+li span { flex: 1; overflow-wrap: anywhere; }
+li button { background: transparent; color: #855048; font-size: .85rem; }
+.completed { text-decoration: line-through; color: #788980; }
+footer { margin-top: 2rem; color: #788980; font-size: .85rem; }
