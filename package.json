@@ -1,0 +1,12 @@
+{
+  "name": "webgpt-taskboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node scripts/check-syntax.mjs",
+    "build": "node scripts/build.mjs",
+    "format-check": "node scripts/check-format.mjs"
+  }
+}

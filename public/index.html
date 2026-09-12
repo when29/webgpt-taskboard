@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taskboard</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <header><p class="eyebrow">A little room for focus</p><h1>Taskboard</h1></header>
+    <form id="task-form">
+      <label for="task-title">What needs doing?</label>
+      <div class="entry"><input id="task-title" name="title" required maxlength="200" autocomplete="off"><button>Add task</button></div>
+    </form>
+    <p id="summary" aria-live="polite"></p>
+    <ul id="task-list" aria-label="Tasks"></ul>
+    <footer>Your tasks stay in this browser.</footer>
+  </main>
+  <script type="module" src="./src/app.mjs"></script>
+</body>
+</html>
